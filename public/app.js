@@ -21,6 +21,18 @@ function toast(msg, isError = false) {
   setTimeout(() => (t.className = ''), 2500);
 }
 
+async function loadAlert() {
+  const low = await api('/api/products?low=true');
+  const banner = $('alertBanner');
+  if (low.length) {
+    banner.hidden = false;
+    banner.innerHTML = `⚠️ <strong>${low.length} item(s) low on stock:</strong> ` +
+      low.map(p => `${esc(p.name)} (${p.quantity})`).join(', ');
+  } else {
+    banner.hidden = true;
+  }
+}
+
 // ---------- Load data ----------
 async function loadStats() {
   const s = await api('/api/stats');
@@ -182,5 +194,10 @@ $('stockForm').onsubmit = async e => {
 let timer;
 $('search').oninput = () => { clearTimeout(timer); timer = setTimeout(loadProducts, 300); };
 $('lowOnly').onchange = loadProducts;
+
+async function refreshAll() {
+  try { await Promise.all([loadStats(), loadProducts(), loadHistory(), loadAlert()]); }
+  catch (e) { toast(e.message, true); }
+}
 
 refreshAll();

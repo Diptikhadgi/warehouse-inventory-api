@@ -67,6 +67,32 @@ async function refreshAll() {
   catch (e) { toast(e.message, true); }
 }
 
+let sortKey = null;
+let sortDir = 1; // 1 = ascending, -1 = descending
+
+function sortedProducts() {
+  if (!sortKey) return products;
+  return [...products].sort((a, b) => {
+    const x = a[sortKey] ?? '';
+    const y = b[sortKey] ?? '';
+    if (typeof x === 'number') return (x - y) * sortDir;
+    return String(x).localeCompare(String(y)) * sortDir;
+  });
+}
+
+document.querySelector('thead').addEventListener('click', e => {
+  const th = e.target.closest('th.sortable');
+  if (!th) return;
+  const key = th.dataset.sort;
+  sortDir = (sortKey === key) ? -sortDir : 1;
+  sortKey = key;
+  document.querySelectorAll('th.sortable').forEach(h => {
+    h.textContent = h.textContent.replace(/ [▲▼]$/, '');
+  });
+  th.textContent += sortDir === 1 ? ' ▲' : ' ▼';
+  renderTable();
+});
+
 // ---------- Render ----------
 function renderTable() {
   const body = $('productBody');
@@ -74,7 +100,7 @@ function renderTable() {
     body.innerHTML = '<tr><td colspan="6" class="empty">No products found</td></tr>';
     return;
   }
-  body.innerHTML = products.map(p => {
+  body.innerHTML = sortedProducts().map(p =>  {
     const low = p.quantity <= p.min_stock;
     return `<tr>
       <td><strong>${esc(p.name)}</strong></td>

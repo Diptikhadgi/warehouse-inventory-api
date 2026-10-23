@@ -48,7 +48,14 @@
         <h3>Recent Movements</h3>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Product</th><th>Type</th><th>Qty</th><th>Time</th></tr></thead>
+            <tr>
+               <th data-sort="name" class="sortable">Product</th>
+               <th data-sort="sku" class="sortable">SKU</th>
+               <th data-sort="rack_location" class="sortable">Rack</th>
+               <th data-sort="quantity" class="sortable">Qty</th>
+               <th>Status</th>
+               <th>Actions</th>
+            </tr>
             <tbody id="historyBody"></tbody>
           </table>
         </div>

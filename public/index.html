@@ -9,12 +9,15 @@
 </head>
 <body>
   <header class="topbar">
-    <div>
-      <h1>📦 Warehouse Inventory</h1>
-      <p>Real-time stock tracking dashboard</p>
-    </div>
+  <div>
+    <h1>📦 Warehouse Inventory</h1>
+    <p>Real-time stock tracking dashboard</p>
+  </div>
+  <div class="header-actions">
+    <a href="/api/products/export" class="btn" id="exportBtn">⬇ Download Report</a>
     <button class="btn primary" id="addBtn">+ Add Product</button>
-  </header>
+  </div>
+</header>
 
   <main>
     <div id="alertBanner" class="alert" hidden></div>
@@ -32,8 +35,15 @@
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Product</th><th>SKU</th><th>Rack</th><th>Qty</th><th>Status</th><th>Actions</th></tr>
-          </thead>
+  <tr>
+    <th data-sort="name" class="sortable">Product</th>
+    <th data-sort="sku" class="sortable">SKU</th>
+    <th data-sort="rack_location" class="sortable">Rack</th>
+    <th data-sort="quantity" class="sortable">Qty</th>
+    <th>Status</th>
+    <th>Actions</th>
+  </tr>
+</thead>
           <tbody id="productBody"></tbody>
         </table>
       </div>
@@ -48,14 +58,7 @@
         <h3>Recent Movements</h3>
         <div class="table-wrap">
           <table>
-            <tr>
-               <th data-sort="name" class="sortable">Product</th>
-               <th data-sort="sku" class="sortable">SKU</th>
-               <th data-sort="rack_location" class="sortable">Rack</th>
-               <th data-sort="quantity" class="sortable">Qty</th>
-               <th>Status</th>
-               <th>Actions</th>
-            </tr>
+            <thead><tr><th>Product</th><th>Type</th><th>Qty</th><th>Time</th></tr></thead>
             <tbody id="historyBody"></tbody>
           </table>
         </div>

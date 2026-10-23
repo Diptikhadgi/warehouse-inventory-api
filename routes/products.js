@@ -67,4 +67,24 @@ router.delete('/:id', async (req, res) => {
   } catch (e) { handleError(e, res); }
 });
 
+// GET /api/products/export  ->  CSV download
+router.get('/export', async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      'SELECT name, sku, rack_location, quantity, min_stock FROM products ORDER BY name');
+
+    const cell = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const header = ['Product', 'SKU', 'Rack', 'Quantity', 'Min Stock', 'Status'];
+    const lines = rows.map(p => [
+      p.name, p.sku, p.rack_location, p.quantity, p.min_stock,
+      p.quantity <= p.min_stock ? 'Low Stock' : 'In Stock'
+    ].map(cell).join(','));
+
+    const csv = '\uFEFF' + [header.join(','), ...lines].join('\r\n');
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename="stock-report.csv"');
+    res.send(csv);
+  } catch (e) { handleError(e, res); }
+});
 module.exports = router;
